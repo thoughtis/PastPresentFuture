@@ -618,6 +618,11 @@
             var $link = $( link ),
                 url = $link.attr( 'href' ) || '';
 
+            // Ignore anchor '#' links
+            if ( url.substr( 0, 1 ) === '#' ) {
+                return false;
+            }
+
             // Intended for a new window.
             if ( $link.attr( 'target' ) === '_blank' ) {
                 return false;
