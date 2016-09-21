@@ -809,6 +809,11 @@
                 return;
             }
 
+            // Don't reload the current page if we're going to an anchor
+            if ( window.location.hash ) {
+                return;
+            }
+
             $window.trigger( 'PastPresentFuture:PopState', event );
 
             gotoUrl( Util.currentStateUrl(), {
