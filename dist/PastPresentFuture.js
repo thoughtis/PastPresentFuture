@@ -4,7 +4,8 @@
  * @author Athletics - http://athleticsnyc.com
  * @see https://github.com/athletics/PastPresentFuture
  * @version 0.1.6
- *//**
+ */
+/**
  * Shared utilities.
  */
 ( function ( window, factory ) {
@@ -970,29 +971,31 @@
             return;
         }
 
+        function _fetched_data( event, data ) {
+
+            // Only proceed for currently request url.
+            if ( data.url !== url ) {
+                return;
+            }
+
+            if ( ! options.popstate ) {
+                // history.pushState has to happen before rendering.
+                // Otherwise the page title in the history gets messed up.
+                $window.trigger( 'PastPresentFuture:PushState', options );
+            }
+
+            $window.trigger( 'PastPresentFuture:RenderUrl', data );
+
+            toggleLoading( false );
+
+            // Unbind window event.
+            $( this ).off( 'PastPresentFuture:FetchedData' );
+
+        }
+
         $window
-            .off( 'PastPresentFuture:FetchedData' )
-            .on( 'PastPresentFuture:FetchedData', function ( event, data ) {
-
-                // Only proceed for currently request url.
-                if ( data.url !== url ) {
-                    return;
-                }
-
-                if ( ! options.popstate ) {
-                    // history.pushState has to happen before rendering.
-                    // Otherwise the page title in the history gets messed up.
-                    $window.trigger( 'PastPresentFuture:PushState', options );
-                }
-
-                $window.trigger( 'PastPresentFuture:RenderUrl', data );
-
-                toggleLoading( false );
-
-                // Unbind window event.
-                $( this ).off( 'PastPresentFuture:FetchedData' );
-
-            } );
+            .off( 'PastPresentFuture:FetchedData', _fetched_data )
+            .on( 'PastPresentFuture:FetchedData', _fetched_data );
 
         var data = getUrlData( {
             url: url,
